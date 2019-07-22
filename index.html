@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    
+    <!-- Optional JavaScript -->
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+    <title>Visualisierung Tool</title>
+
+    <!--Wizard-->
+	<style>
+		.body-container{
+			margin-top: 20px;
+		}
+        div.relative {
+            position: relative;
+            width: 1000px;
+            height: 500px;
+        }
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+
+        .axis text {
+            font-size: 10px;
+            font-family: sans-serif;
+        }
+        .equation {
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .line {
+            stroke: #E4002B;
+            fill: none;
+            stroke-width: 3;
+        }
+
+
+    </style>
+
+
+  </head>
+  <body>
+
+    <!--Header-->
+    <nav class="navbar navbar-expand-lg" style="background-color: #343a41 !important">
+        <a class="navbar-brand" href="#">
+            <h5 class="text-center" style="color:white">Ethereum Visualisierung Tool</h5>
+        </a>
+    </nav>
+
+    <!--Body-->
+  
+    <!-- First Page Blockchain Host -->
+    <div id="first-page" class="container mt-3">
+      <div class="card">
+          <h5 class="card-header">Blockchain Host</h5>
+        <div class="card-body">
+          
+          <div class="input-group mb-3">
+            <input id="blockchain_host" type="text" class="form-control" placeholder="Enter a valid Blockchain Host" aria-label="Blockchain Host" aria-describedby="blockchain_host" value="http://127.0.0.1:8081">
+          </div>
+
+          <div class="float-right">
+              <a onclick="display_page('second-page')" class="btn btn-primary text-white">Next</a>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <!-- End of the First Page Blockchain Host -->
+
+    <!-- Second Page Node IDs-->
+    <div id="second-page" class="container mt-3 invisible">
+      <div class="card">
+        <div class="card-header">
+          Node IDs
+          <div class="float-right">
+              <i class="fas fa-plus" id="plus" onclick="newinput()"></i>
+              <i class="fas fa-minus" onclick="deleteinput(id)"></i>
+          </div>
+        </div>
+        <div class="card-body">
+                   
+          <div class="input-group mb-3">
+            <div id="chain-input-list" class="container mt-3">
+
+            </div>
+          </div>
+          <div class="float-right">
+              <a onclick="display_page('third-page')" class="btn btn-primary text-white">Next</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End of the Second Page Node IDs-->
+
+    <!-- Third Page -->
+    <div id="third-page" class="container-fluid mt-3 invisible">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs nav-justified" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#latestblock_pane">Latest Blocks</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#transactions_pane">Latest Transactions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#grafikunterzeit_pane">Grafik unter Zeit</a>
+          </li>
+        </ul>
+      
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div id="latestblock_pane" class="container tab-pane active"><br>
+            
+            <table id="block_table" class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Block Number</th>
+                    <th scope="col">Miner</th>
+                    <th scope="col">Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>3333333</td>
+                    <td>Otto</td>
+                    <td>@12</td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+          <div id="transactions_pane" class="container tab-pane fade"><br>
+            
+            <table id="transaction_table" class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Transaction hash</th>
+                    <th scope="col">From</th>
+                    <th scope="col">To</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>fasdfsdfas324234234</td>
+                    <td>Otto</td>
+                    <td>Berkay</td>
+                  </tr>
+
+
+                </tbody>
+              </table>
+          </div>
+          <div id="grafikunterzeit_pane" class="container tab-pane fade"><br>
+          
+            
+            <div class="chart"></div>
+            <div class="equation"></div>
+            <div class="equation"></div>
+            
+            
+            
+            
+            
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onChange="displaysub()">
+                Select a type of visualization
+                    <span class="caret"></span>
+                </button>
+            
+            
+            
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item"  id="item1" href="#" >Täglich</a>
+                    <a class="dropdown-item"  id="item2" href="#">Wöchentlich</a>
+                    <a class="dropdown-item"  id="item3" href="#">Monatlich</a>
+                    <a class="dropdown-item"  id="item4" href="#">Alle</a>
+                </div>
+
+            
+            </div>
+
+
+
+            <div id="container" style="min-width: 310px; height: 400px; max-width: 800px; margin: 0 auto"></div>
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="weeklyRegression" data-toggle="dropdown" style="visibility: hidden" aria-haspopup="true" aria-expanded="false" onChange="displaysub()">
+                      Regression
+                      <span class="caret"></span>
+                  </button>
+
+
+
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                      <a class="dropdown-item"  id="elem1" href="#">Sontag</a>
+                      <a class="dropdown-item"  id="elem2" href="#">Montag</a>
+                      <a class="dropdown-item"  id="elem3" href="#">Dienstag</a>
+                      <a class="dropdown-item"  id="elem4" href="#">Mittwoch</a>
+                      <a class="dropdown-item"  id="elem5" href="#">Donnerstag</a>
+                      <a class="dropdown-item"  id="elem6" href="#">Freitag</a>
+                      <a class="dropdown-item"  id="elem7" href="#">Samstag</a>
+                  </div>
+
+
+              </div>
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="monthlyRegression" data-toggle="dropdown" style="visibility: hidden" aria-haspopup="true" aria-expanded="false" onChange="displaysub()">
+                      Regression
+                      <span class="caret"></span>
+                  </button>
+
+
+
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                      <a class="dropdown-item"  id="var1" href="#">Januar</a>
+                      <a class="dropdown-item"  id="var2" href="#">Februar</a>
+                      <a class="dropdown-item"  id="var3" href="#">März</a>
+                      <a class="dropdown-item"  id="var4" href="#">April</a>
+                      <a class="dropdown-item"  id="var5" href="#">Mai</a>
+                      <a class="dropdown-item"  id="var6" href="#">Juni</a>
+                      <a class="dropdown-item"  id="var7" href="#">Juli</a>
+                      <a class="dropdown-item"  id="var8" href="#">August</a>
+                      <a class="dropdown-item"  id="var9" href="#">September</a>
+                      <a class="dropdown-item"  id="var10" href="#">Oktober</a>
+                      <a class="dropdown-item"  id="var11" href="#">November</a>
+                      <a class="dropdown-item"  id="var12" href="#">Dezember</a>
+                  </div>
+
+
+
+              </div>
+
+              <div class="row">
+                  <div class="col-4" style="position: relative; width: 40px;">
+                      <button id="myBtn"  >Regression
+                          <script>
+                              document.getElementById("myBtn").style.visibility="hidden";
+                          </script>
+                      </button>
+                  </div>
+
+                  <div id="correlation" class="col-4" style="position: relative">
+                      <p id="korrelation"> </p>
+
+
+                  </div>
+              </div>
+
+
+          </div>
+        </div>
+    </div>
+    <!-- End of the Third Page -->
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="./prototyp6.js"></script>
+    <script type="text/javascript" src="./Grafik_2.js"></script>
+    <script type="text/javascript" src="./correlation.js"></script>
+    <script type="text/javascript" src="./ui_script2_4.js"></script>
+
+    <!-- Grafik scripts-->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
+
+
+  
+
+  </body>
+</html>
